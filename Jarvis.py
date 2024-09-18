@@ -6,6 +6,7 @@ import webbrowser
 import smtplib
 import subprocess as sub
 import tkinter as tk
+import os
 
 
 #using SAPI5 as a Speech API
@@ -51,10 +52,11 @@ def takeCommand():
     return query
 # a basic smtp tool for sending emails
 def sendEmail(to, content):
+    Epasswd=os.getenv('EMAIL_PASSWORD')
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('RyomenSukuna697989@gmail.com', 'zepbmbatctgtxlsq')
+    server.login('RyomenSukuna697989@gmail.com', 'Epasswd')
     server.sendmail('RyomenSukuna697989@gmail.com', to, content)
     server.close()
 # a simple calculator with GUI using Tkinter
