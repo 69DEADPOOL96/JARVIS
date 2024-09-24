@@ -1,4 +1,3 @@
-import os
 import datetime
 import pyttsx3
 import speech_recognition as sr
@@ -6,20 +5,39 @@ import wikipedia
 import webbrowser
 import smtplib
 import tkinter as tk
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 # Initialize text-to-speech engine
 engine = pyttsx3.init("sapi5")
 voice = engine.getProperty("voices")[0]
 engine.setProperty("voice", voice.id)
 
-# Environment variables
-EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+# Global variable for output preference
+output_preference = None
+
+
+def set_output_preference():
+    global output_preference
+    while True:
+        choice = input("Do you prefer text or voice output? (T/V): ").upper()
+        if choice in ["T", "V"]:
+            output_preference = choice
+            break
+        else:
+            print("Invalid choice. Please enter 'T' for text or 'V' for voice.")
 
 
 def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
+    if output_preference == "V":
+        engine.say(audio)
+        engine.runAndWait()
+    print(audio)
 
 
 def wish_user():
@@ -122,6 +140,7 @@ def calculator():
 
 
 def main():
+    set_output_preference()
     wish_user()
     while True:
         query = recognize_speech()
