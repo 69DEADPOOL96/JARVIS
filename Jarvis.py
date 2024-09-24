@@ -9,6 +9,7 @@ import tkinter as tk
 import os
 
 
+
 #using SAPI5 as a Speech API
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -56,8 +57,8 @@ def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('RyomenSukuna697989@gmail.com', 'Epasswd')
-    server.sendmail('RyomenSukuna697989@gmail.com', to, content)
+    server.login('your_email', 'passwd') #enter ()"your email, passwd")
+    server.sendmail('your_email', to, content)
     server.close()
 # a simple calculator with GUI using Tkinter
 def calculator():
