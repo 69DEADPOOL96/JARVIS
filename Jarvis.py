@@ -36,6 +36,7 @@ set_output_preference()
 def speak(audio):
         engine.say(audio)
         engine.runAndWait()
+        print(audio)
     
 
 def wish_user():
