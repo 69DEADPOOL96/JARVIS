@@ -21,7 +21,6 @@ engine.setProperty("voice", voice.id)
 # Global variable for output preference
 output_preference = None
 
-
 def set_output_preference():
     global output_preference
     while True:
@@ -31,14 +30,13 @@ def set_output_preference():
             break
         else:
             print("Invalid choice. Please enter 'T' for text or 'V' for voice.")
+set_output_preference()
 
 
 def speak(audio):
-    if output_preference == "V":
         engine.say(audio)
         engine.runAndWait()
-    print(audio)
-
+    
 
 def wish_user():
     hour = datetime.datetime.now().hour
@@ -140,94 +138,96 @@ def calculator():
 
 
 def main():
-    set_output_preference()
-    wish_user()
-    while True:
-        query = recognize_speech()
-        if not query:
-            continue
+    if output_preference=='V':
+        wish_user()
+        while True:
+            query = recognize_speech()
+            if not query:
+                continue
 
-        if "wikipedia" in query:
-            speak("What should I search?")
-            search_query = recognize_speech()
-            try:
-                result = wikipedia.summary(search_query, sentences=3)
-                speak("According to Wikipedia...")
-                print(result)
-                speak(result)
-            except Exception as e:
-                print(e)
-                speak("Topic not found. Please try something else.")
+            if "wikipedia" in query:
+                speak("What should I search?")
+                search_query = recognize_speech()
+                try:
+                    result = wikipedia.summary(search_query, sentences=3)
+                    speak("According to Wikipedia...")
+                    print(result)
+                    speak(result)
+                except Exception as e:
+                    print(e)
+                    speak("Topic not found. Please try something else.")
 
-        elif "send email" in query:
-            speak("Type the recipient's email address:")
-            to = input("Email address: ").lower()
-            if not to.endswith(
-                (
-                    "@gmail.com",
-                    "@outlook.com",
-                    "@hotmail.com",
-                    "@yahoo.com",
-                    "@icloud.com",
+            elif "send email" in query:
+                speak("Type the recipient's email address:")
+                to = input("Email address: ").lower()
+                if not to.endswith(
+                    (
+                        "@gmail.com",
+                        "@outlook.com",
+                        "@hotmail.com",
+                        "@yahoo.com",
+                        "@icloud.com",
+                    )
+                ):
+                    print("Invalid email address")
+                    speak("Invalid email address detected")
+                    continue
+
+                speak(
+                    "Would you prefer keyboard or speech input? Type 'K' for keyboard or 'S' for speech:"
                 )
-            ):
-                print("Invalid email address")
-                speak("Invalid email address detected")
-                continue
+                choice = input().upper()
 
-            speak(
-                "Would you prefer keyboard or speech input? Type 'K' for keyboard or 'S' for speech:"
-            )
-            choice = input().upper()
+                if choice == "S":
+                    speak("What should I say?")
+                    content = recognize_speech()
+                elif choice == "K":
+                    print("What should I say?")
+                    content = input("Write your content here: ")
+                else:
+                    print("Invalid choice")
+                    continue
 
-            if choice == "S":
-                speak("What should I say?")
-                content = recognize_speech()
-            elif choice == "K":
-                print("What should I say?")
-                content = input("Write your content here: ")
-            else:
-                print("Invalid choice")
-                continue
+                try:
+                    send_email(to, content)
+                    speak("Email has been sent")
+                except Exception as e:
+                    print(e)
+                    speak("An error occurred while sending the email")
 
-            try:
-                send_email(to, content)
-                speak("Email has been sent")
-            except Exception as e:
-                print(e)
-                speak("An error occurred while sending the email")
+            elif "open youtube" in query:
+                speak("Opening YouTube...")
+                webbrowser.open("https://www.youtube.com")
 
-        elif "open youtube" in query:
-            speak("Opening YouTube...")
-            webbrowser.open("https://www.youtube.com")
+            elif "open mail" in query or "open gmail" in query:
+                speak("Opening your mailbox...")
+                webbrowser.open("https://www.gmail.com")
 
-        elif "open mail" in query or "open gmail" in query:
-            speak("Opening your mailbox...")
-            webbrowser.open("https://www.gmail.com")
+            elif "search in google" in query:
+                speak("What should I search for?")
+                search_query = (
+                    recognize_speech()
+                    if input("'K' for text, 'S' for speech: ").upper() == "S"
+                    else input("Type here: ")
+                )
+                webbrowser.open(f"https://www.google.com/search?q={search_query}")
 
-        elif "search in google" in query:
-            speak("What should I search for?")
-            search_query = (
-                recognize_speech()
-                if input("'K' for text, 'S' for speech: ").upper() == "S"
-                else input("Type here: ")
-            )
-            webbrowser.open(f"https://www.google.com/search?q={search_query}")
+            elif "the time" in query:
+                current_time = datetime.datetime.now().strftime("%H:%M:%S")
+                speak(f"The time is {current_time}")
+                print(current_time)
 
-        elif "the time" in query:
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"The time is {current_time}")
-            print(current_time)
+            elif "calculator" in query:
+                calculator()
 
-        elif "calculator" in query:
-            calculator()
+            elif "how are you" in query:
+                speak("I am fine! How are you?")
 
-        elif "how are you" in query:
-            speak("I am fine! How are you?")
-
-        elif "bye" in query or "quit" in query:
-            speak("Goodbye! See you later.")
-            break
+            elif "bye" in query or "quit" in query:
+                speak("Goodbye! See you later.")
+                break
+        else:
+            exit()
 
 
 if __name__ == "__main__":
