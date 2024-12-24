@@ -65,6 +65,10 @@ def recognize_speech():
         print("Unable to recognize. Please speak again...")
         return None
 
+def recognize_text():
+    query=input("Type here:  ")
+    return query.lower()
+
 
 def send_email(to, content):
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
@@ -139,16 +143,16 @@ def calculator():
 
 
 def main():
-    if output_preference=='V':
         wish_user()
         while True:
+            query = recognize_speech() if output_preference == "V" else recognize_text()
             query = recognize_speech()
             if not query:
                 continue
 
             if "wikipedia" in query:
                 speak("What should I search?")
-                search_query = recognize_speech()
+                search_query = recognize_speech() if output_preference =="V" else recognize_text()
                 try:
                     result = wikipedia.summary(search_query, sentences=3)
                     speak("According to Wikipedia...")
