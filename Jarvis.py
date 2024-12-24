@@ -146,7 +146,6 @@ def main():
         wish_user()
         while True:
             query = recognize_speech() if output_preference == "V" else recognize_text()
-            query = recognize_speech()
             if not query:
                 continue
 
